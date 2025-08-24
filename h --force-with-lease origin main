@@ -1,0 +1,2 @@
+[33m4d47f88[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m Update storybook HTML: Change title to "This Or That", add favicons, introduce new font "KidsClubHouse", enhance UI elements including buttons and character selection, and implement a "Surprise Me" button for random selections. Adjust character descriptions and improve layout for better user experience.
+[33mac7129e[m Implement request queue for API calls to manage rate limits and enhance error handling in image and audio generation functions.

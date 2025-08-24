@@ -1,0 +1,1940 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>This Or That</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="images/32x32_favicon.svg">
+    <link rel="icon" type="image/svg+xml" sizes="512x512" href="images/512x512_favicon.svg">
+    <link rel="apple-touch-icon" href="images/512x512_favicon.svg">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="config.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Fredoka+One:wght@400&family=Bubblegum+Sans:wght@400&display=swap"
+        rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'DragonKids';
+            src: url('fonts/DragonKids-nR1dR.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'KidsTouch';
+            src: url('fonts/KidsTouch-RpgjE.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'CoconutKids';
+            src: url('fonts/CoconutKids-axjqx.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'WowDino';
+            src: url('fonts/WowDino-G33vP.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'PlaveaShine';
+            src: url('fonts/PlaveaShine-8M4XD.otf') format('opentype');
+        }
+
+        @font-face {
+            font-family: 'SquareKids';
+            src: url('fonts/SquareKids-LZ5y.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'KidsClubHouse';
+            src: url('fonts/KidsClubHouse-vmnny.ttf') format('truetype');
+        }
+
+        body {
+            font-family: 'DragonKids', cursive;
+            font-size: 18px;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-display: swap;
+        }
+
+        .storybook-page {
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .flipped {
+            transform: rotateY(-180deg);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 8px solid #3498db;
+            width: 60px;
+            height: 60px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .fun-title {
+            font-family: 'Fredoka One', cursive;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4, #FFEAA7);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: rainbow 3s ease-in-out infinite;
+            text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes rainbow {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .sparkle {
+            position: relative;
+        }
+
+        .sparkle::before,
+        .sparkle::after {
+            content: '✨';
+            position: absolute;
+            font-size: 0.5em;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        .sparkle::before {
+            left: -20px;
+            top: 0;
+            animation-delay: 0s;
+        }
+
+        .sparkle::after {
+            right: -20px;
+            top: 0;
+            animation-delay: 1s;
+        }
+
+        @keyframes sparkle {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: scale(0.5) rotate(0deg);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1) rotate(180deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+
+    <!-- Landing Page -->
+    <div id="landing-page"
+        class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-purple-50">
+        <div class="text-center">
+            <img src="images/this_or_that_cover_page.svg" alt="This Or That"
+                class="mx-auto mb-8 max-w-full h-auto w-80 md:w-96 lg:w-[500px] xl:w-[600px]">
+            <button id="begin-btn"
+                class="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 px-8 rounded-full text-2xl md:text-3xl shadow-lg transform hover:scale-105 transition-all duration-300 border-4 border-white/20">
+                Begin
+            </button>
+        </div>
+    </div>
+
+    <!-- Story Mode Selection Screen -->
+    <div id="mode-selection-screen" class="min-h-screen hidden flex items-center justify-center p-4">
+        <div class="w-full max-w-6xl">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-white drop-shadow-lg"
+                    style="font-family: 'KidsClubHouse', cursive;">
+                    Choose Your<br>Main Character
+                </h1>
+                <p class="text-lg md:text-xl lg:text-2xl text-white font-semibold drop-shadow-lg">Pick your favorite
+                    character and start your
+                    adventure!</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 w-full max-w-5xl mx-auto">
+                <!-- Tyson's Tales -->
+                <div id="tyson-card"
+                    class="bg-gradient-to-br from-red-50 to-orange-50 rounded-3xl p-8 md:p-10 lg:p-12 border-4 border-red-200 hover:border-red-400 transition-all transform hover:scale-105 cursor-pointer shadow-2xl h-full min-h-[500px] md:min-h-[600px] lg:min-h-[700px] flex flex-col justify-center">
+                    <div class="text-center">
+                        <div
+                            class="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 mx-auto mb-6 md:mb-8 bg-gradient-to-br from-red-400 to-orange-400 rounded-full flex items-center justify-center shadow-lg">
+                            <img src="images/tyson_frame.svg" alt="Tyson" class="w-full h-full object-contain">
+                        </div>
+                        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-red-700 mb-4 md:mb-6"
+                            style="font-family: 'WowDino', cursive;">Tyson's Tales
+                        </h2>
+                        <p class="text-lg md:text-xl lg:text-2xl text-red-600 mb-6 md:mb-8">Bold adventures for brave
+                            little
+                            heroes!</p>
+                        <div class="space-y-3 md:space-y-4 text-left">
+                            <div class="flex items-center">
+                                <span class="text-2xl md:text-3xl mr-3 md:mr-4">🎒</span>
+                                <span class="text-base md:text-lg lg:text-xl text-red-700">Meet Tyson, a 5-year-old
+                                    adventurer</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sophia's Stories -->
+                <div id="sophia-card"
+                    class="bg-gradient-to-br from-pink-50 to-purple-50 rounded-3xl p-8 md:p-10 lg:p-12 border-4 border-pink-200 hover:border-pink-400 transition-all transform hover:scale-105 cursor-pointer shadow-2xl h-full min-h-[500px] md:min-h-[600px] lg:min-h-[700px] flex flex-col justify-center">
+                    <div class="text-center">
+                        <div
+                            class="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 mx-auto mb-6 md:mb-8 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full flex items-center justify-center shadow-lg">
+                            <img src="images/sophia_frame.svg" alt="Sophia" class="w-full h-full object-contain">
+                        </div>
+                        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-purple-700 mb-4 md:mb-6"
+                            style="font-family: 'PlaveaShine', cursive;">Sophia's
+                            Stories</h2>
+                        <p class="text-lg md:text-xl lg:text-2xl text-purple-600 mb-6 md:mb-8">Magical tales for sweet
+                            little dreamers!</p>
+                        <div class="space-y-3 md:space-y-4 text-left">
+                            <div class="flex items-center">
+                                <span class="text-2xl md:text-3xl mr-3 md:mr-4">🌸</span>
+                                <span class="text-base md:text-lg lg:text-xl text-purple-700">Meet Sophia, a 2-year-old
+                                    dreamer</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Setup Screen (will be styled based on selected mode) -->
+    <div id="setup-screen" class="min-h-screen hidden flex items-center justify-center p-4">
+        <div class="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-8 md:p-10 lg:p-12 max-w-6xl w-full">
+            <div class="text-center mb-10 md:mb-12">
+                <h1 id="setup-title" class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+                    Create Your Story
+                </h1>
+                <p id="setup-subtitle" class="text-lg md:text-xl text-gray-600">Let's make a magical adventure
+                    together!</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 md:gap-10 lg:gap-12">
+                <!-- Left Column - Form Fields -->
+                <div class="space-y-6 md:space-y-8">
+                    <div class="relative">
+
+                        <select id="theme"
+                            class="w-full px-4 py-4 border-2 border-gray-200 rounded-2xl text-lg focus:outline-none transition-colors bg-white/50 backdrop-blur-sm appearance-none">
+                            <option value="">Choose a Theme</option>
+                            <option value="adventure">🗺️ Adventure</option>
+                            <option value="magical">✨ Magical</option>
+                            <option value="space">🚀 Space</option>
+                            <option value="underwater">🌊 Underwater</option>
+                            <option value="fairy tale">🏰 Fairy Tale</option>
+                            <option value="mystery">🔍 Mystery</option>
+                            <option value="superhero">🦸 Superhero</option>
+                            <option value="time travel">⏰ Time Travel</option>
+                            <option value="music">🎵 Music</option>
+                            <option value="sports">⚽ Sports</option>
+                            <option value="nature">🌿 Nature</option>
+                            <option value="food">🍕 Food</option>
+                            <option value="art">🎨 Art</option>
+                            <option value="science">🔬 Science</option>
+                            <option value="cars">🚗 Cars</option>
+                        </select>
+                    </div>
+
+                    <div class="relative">
+
+                        <select id="scene"
+                            class="w-full px-4 py-4 border-2 border-gray-200 rounded-2xl text-lg focus:outline-none transition-colors bg-white/50 backdrop-blur-sm appearance-none">
+                            <option value="">Where?</option>
+                            <option value="a magical forest">🌲 A magical forest</option>
+                            <option value="a space station">🛸 A space station</option>
+                            <option value="an underwater city">🐠 An underwater city</option>
+                            <option value="a candy kingdom">🍭 A candy kingdom</option>
+                            <option value="a cloud castle">☁️ A cloud castle</option>
+                            <option value="a dinosaur island">🦕 A dinosaur island</option>
+                            <option value="a robot factory">🤖 A robot factory</option>
+                            <option value="a music school">🎼 A music school</option>
+                            <option value="a superhero city">🏙️ A superhero city</option>
+                            <option value="a time machine">⏰ A time machine</option>
+                            <option value="a sports stadium">🏟️ A sports stadium</option>
+                            <option value="a garden paradise">🌸 A garden paradise</option>
+                            <option value="a pizza planet">🍕 A pizza planet</option>
+                            <option value="an art museum">🎨 An art museum</option>
+                            <option value="a science lab">🧪 A science lab</option>
+                            <option value="a pirate ship">🏴‍☠️ A pirate ship</option>
+                            <option value="a dragon cave">🐉 A dragon cave</option>
+                            <option value="a rainbow bridge">🌈 A rainbow bridge</option>
+                            <option value="a toy store">🧸 A toy store</option>
+                            <option value="a car world">🚗 A car world</option>
+                        </select>
+                    </div>
+
+                    <div class="relative">
+
+                        <select id="best-friend"
+                            class="w-full px-4 py-4 border-2 border-gray-200 rounded-2xl text-lg focus:outline-none transition-colors bg-white/50 backdrop-blur-sm appearance-none">
+                            <option value="">Choose your buddy...</option>
+                            <option value="Ice">🐕 Ice (Friendly Dog)</option>
+                            <option value="Rexy">🦖 Rexy (Clever Dinosaur)</option>
+                            <option value="Buccaneer Bob">🏴‍☠️ Buccaneer Bob (Funny Pirate)</option>
+                            <option value="Stardust">🦄 Stardust (Magical Unicorn)</option>
+                            <option value="Sparky">⚡ Sparky (Electric Robot)</option>
+                            <option value="Bubbles">🫧 Bubbles (Playful Fish)</option>
+                            <option value="Rocky">🪨 Rocky (Strong Bear)</option>
+                            <option value="Twinkle">⭐ Twinkle (Shooting Star)</option>
+                            <option value="Giggles">😄 Giggles (Jolly Clown)</option>
+                            <option value="Whiskers">🐱 Whiskers (Curious Cat)</option>
+                            <option value="Zippy">🏃 Zippy (Fast Rabbit)</option>
+                            <option value="Wise Owl">🦉 Wise Owl (Smart Teacher)</option>
+                            <option value="Rainbow">🌈 Rainbow (Colorful Bird)</option>
+                            <option value="Captain Zoom">🚀 Captain Zoom (Space Explorer)</option>
+                            <option value="Princess Luna">👑 Princess Luna (Royal Friend)</option>
+                            <option value="Professor Bubbles">🧪 Professor Bubbles (Scientist)</option>
+                            <option value="Dance Star">💃 Dance Star (Dancing Star)</option>
+                            <option value="Magic Mike">🎩 Magic Mike (Magician)</option>
+                            <option value="Princess Bella">👸 Princess Bella (Royal Princess)</option>
+                            <option value="Zoomer">🚗 Zoomer (Talking Car)</option>
+                        </select>
+                    </div>
+
+                    <!-- Surprise Me Button -->
+                    <div class="text-center">
+                        <button id="surprise-me-btn"
+                            class="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 px-8 rounded-full text-lg md:text-xl shadow-lg transform hover:scale-105 transition-all duration-300 border-4 border-white/20">
+                            🎲 Surprise Me!
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Right Column - Character Preview and Story Preview -->
+                <div class="space-y-6 md:space-y-8">
+                    <!-- Character Preview -->
+                    <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 border-2 border-gray-200">
+                        <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 text-center">Your Character</h3>
+                        <div class="text-center">
+                            <div id="character-avatar"
+                                class="w-24 h-24 md:w-32 md:h-32 mx-auto mb-4 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center shadow-lg">
+                                <img src="images/tyson_frame.svg" alt="Tyson" class="w-full h-full object-contain">
+                            </div>
+                            <p id="character-name" class="text-lg md:text-xl font-semibold text-gray-700">Tyson</p>
+                            <p class="text-base md:text-lg text-gray-600">5-year-old adventurer</p>
+                        </div>
+                    </div>
+
+                    <!-- Story Preview Card -->
+                    <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 border-2 border-gray-200">
+                        <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Your Story Preview</h3>
+                        <div class="space-y-3 text-sm md:text-base">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Character:</span>
+                                <span id="preview-character" class="font-semibold text-gray-700">Tyson</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Buddy:</span>
+                                <span id="preview-friend" class="font-semibold text-gray-700">Not set</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Story Type:</span>
+                                <span id="preview-theme" class="font-semibold text-gray-700">Not set</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Setting:</span>
+                                <span id="preview-scene" class="font-semibold text-gray-700">Not set</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-8 md:mt-10">
+                <button id="start-btn"
+                    class="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-4 px-8 rounded-full text-lg md:text-xl shadow-lg transform hover:scale-105 transition-all duration-300 border-4 border-white/20">
+                    Start Your Adventure!
+                </button>
+                <button id="back-btn"
+                    class="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-bold py-3 px-6 rounded-full text-base md:text-lg shadow-lg transform hover:scale-105 transition-all duration-300 border-4 border-white/20 mt-4">
+                    ← Back to Character Selection
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-container" class="w-full max-w-4xl mx-auto">
+
+        <!-- Storybook Screen -->
+        <div id="storybook-screen" class="hidden min-h-screen flex items-center justify-center p-4">
+            <div class="max-w-4xl mx-auto w-full">
+                <!-- Storybook Container -->
+                <div
+                    class="bg-gradient-to-br from-amber-50 to-orange-100 p-8 rounded-3xl shadow-2xl border-4 border-amber-300">
+                    <div id="storybook"
+                        class="w-full aspect-[3/4] relative bg-white rounded-2xl shadow-inner overflow-hidden">
+                        <!-- Current page will be displayed here -->
+                    </div>
+
+                    <!-- Page Navigation -->
+                    <div id="navigation" class="flex justify-center items-center mt-6 space-x-6">
+                        <button id="prev-page-btn"
+                            class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-6 rounded-full transition-transform transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                            ← Previous
+                        </button>
+                        <div class="bg-white px-4 py-2 rounded-full shadow-md">
+                            <span id="page-indicator" class="text-lg font-semibold text-gray-700">Page 1</span>
+                        </div>
+                        <button id="next-page-btn"
+                            class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-6 rounded-full transition-transform transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                            Next →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Choice Buttons -->
+                <div id="choice-buttons" class="mt-8 text-center space-y-4"></div>
+            </div>
+        </div>
+
+        <!-- Loading Modal -->
+        <div id="loading-modal"
+            class="hidden fixed inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center z-50">
+            <div class="loader"></div>
+            <p id="loading-text" class="text-white text-3xl mt-4">Creating your magical story...</p>
+        </div>
+    </div>
+
+    <!-- Choice Modal -->
+    <div id="choice-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-3xl p-8 max-w-2xl mx-4 shadow-2xl">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6 text-center"
+                style="font-family: 'KidsTouch', cursive;">What happens next?</h2>
+            <div id="choice-modal-buttons" class="space-y-4">
+                <!-- Choice buttons will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const setupScreen = document.getElementById('setup-screen');
+        const storybookScreen = document.getElementById('storybook-screen');
+        const startStoryBtn = document.getElementById('start-story-btn');
+        const storybook = document.getElementById('storybook');
+        const prevPageBtn = document.getElementById('prev-page-btn');
+        const nextPageBtn = document.getElementById('next-page-btn');
+        const pageIndicator = document.getElementById('page-indicator');
+        const choiceButtonsContainer = document.getElementById('choice-buttons');
+        const loadingModal = document.getElementById('loading-modal');
+        const loadingText = document.getElementById('loading-text');
+        const charImageInput = document.getElementById('char-image');
+        const imagePreview = document.getElementById('image-preview');
+
+        let storyData = {
+            pages: [],
+            characterInfo: {},
+            history: [],
+            currentPage: 0,
+            characterImage: null,
+            previousPageCount: 0,
+            autoPlayMode: false,
+            currentAudio: null,
+            isPlaying: false,
+            storyMode: null, // 'tyson' or 'sophia'
+        };
+
+        // Mock mode toggle - set to true to use mock data instead of API calls
+        const MOCK_MODE = false;
+
+        // API Configuration - Use window.API_CONFIG from config.js
+        // For production, these should be loaded from environment variables or a secure configuration
+
+        // --- Landing Page Interactions ---
+        const landingPage = document.getElementById('landing-page');
+        const beginBtn = document.getElementById('begin-btn');
+
+        beginBtn.addEventListener('click', () => {
+            landingPage.classList.add('hidden');
+            modeSelectionScreen.classList.remove('hidden');
+        });
+
+        // --- Mode Selection Interactions ---
+
+        const modeSelectionScreen = document.getElementById('mode-selection-screen');
+        const tysonCard = document.getElementById('tyson-card');
+        const sophiaCard = document.getElementById('sophia-card');
+
+        tysonCard.addEventListener('click', () => {
+            storyData.storyMode = 'tyson';
+            showSetupScreen();
+        });
+
+        sophiaCard.addEventListener('click', () => {
+            storyData.storyMode = 'sophia';
+            showSetupScreen();
+        });
+
+        function showSetupScreen() {
+            modeSelectionScreen.classList.add('hidden');
+            setupScreen.classList.remove('hidden');
+            styleSetupScreen();
+        }
+
+        function styleSetupScreen() {
+            const setupTitle = document.getElementById('setup-title');
+            const setupSubtitle = document.getElementById('setup-subtitle');
+            const startBtn = document.getElementById('start-btn');
+            const surpriseBtn = document.getElementById('surprise-me-btn');
+            const setupContainer = setupScreen.querySelector('div');
+            const characterAvatar = document.getElementById('character-avatar');
+            const characterName = document.getElementById('character-name');
+            const previewCharacter = document.getElementById('preview-character');
+
+            if (storyData.storyMode === 'tyson') {
+                // Tyson's styling - bold red/orange theme
+                setupContainer.className = 'bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-6 md:p-8 max-w-4xl w-full border-4 border-red-200';
+                setupTitle.className = 'text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent';
+                setupTitle.style.fontFamily = "'WowDino', cursive";
+                setupTitle.textContent = "Tyson's Tale!";
+                setupSubtitle.textContent = "Let's go on a bold adventure together!";
+                startBtn.className = 'bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-bold py-4 px-8 rounded-2xl text-xl transition-all transform hover:scale-105 shadow-xl';
+                surpriseBtn.className = 'bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-bold py-4 px-8 rounded-full text-lg md:text-xl shadow-lg transform hover:scale-105 transition-all duration-300 border-4 border-white/20';
+                characterAvatar.className = 'w-24 h-24 md:w-32 md:h-32 mx-auto mb-4 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center shadow-lg';
+                characterAvatar.innerHTML = '<img src="images/tyson_frame.svg" alt="Tyson" class="w-full h-full object-contain">';
+                characterName.textContent = 'Tyson';
+                characterName.className = 'text-2xl md:text-3xl font-semibold text-red-700';
+                previewCharacter.textContent = 'Tyson';
+                previewCharacter.className = 'font-semibold text-red-700';
+
+                // Update character description
+                const characterDesc = characterName.nextElementSibling;
+                if (characterDesc) {
+                    characterDesc.textContent = '5-year-old adventurer';
+                    characterDesc.className = 'text-base md:text-lg text-gray-600';
+                }
+            } else {
+                // Sophia's styling - soft pink/purple theme
+                setupContainer.className = 'bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-6 md:p-8 max-w-4xl w-full border-4 border-pink-200';
+                setupTitle.className = 'text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent';
+                setupTitle.style.fontFamily = "'PlaveaShine', cursive";
+                setupTitle.textContent = "Sophia's Story!";
+                setupSubtitle.textContent = "Let's create a magical tale together!";
+                startBtn.className = 'bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-2xl text-xl transition-all transform hover:scale-105 shadow-xl';
+                surpriseBtn.className = 'bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-bold py-4 px-8 rounded-full text-lg md:text-xl shadow-lg transform hover:scale-105 transition-all duration-300 border-4 border-white/20';
+                characterAvatar.className = 'w-24 h-24 md:w-32 md:h-32 mx-auto mb-4 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full flex items-center justify-center shadow-lg';
+                characterAvatar.innerHTML = '<img src="images/sophia_frame.svg" alt="Sophia" class="w-full h-full object-contain">';
+                characterName.textContent = 'Sophia';
+                characterName.className = 'text-2xl md:text-3xl font-semibold text-pink-700';
+                previewCharacter.textContent = 'Sophia';
+                previewCharacter.className = 'font-semibold text-pink-700';
+
+                // Update character description
+                const characterDesc = characterName.nextElementSibling;
+                if (characterDesc) {
+                    characterDesc.textContent = '2-year-old dreamer';
+                    characterDesc.className = 'text-base md:text-lg text-gray-600';
+                }
+            }
+        }
+
+        // --- Setup Page Interactions ---
+
+        // Real-time preview updates
+        document.getElementById('best-friend').addEventListener('change', updatePreview);
+        document.getElementById('theme').addEventListener('change', updatePreview);
+        document.getElementById('scene').addEventListener('change', updatePreview);
+
+        function updatePreview() {
+            const friend = document.getElementById('best-friend').value || 'Not set';
+            const theme = document.getElementById('theme').value || 'Not set';
+            const scene = document.getElementById('scene').value || 'Not set';
+
+            document.getElementById('preview-friend').textContent = friend;
+            document.getElementById('preview-theme').textContent = theme;
+            document.getElementById('preview-scene').textContent = scene;
+
+            // Enable/disable start button based on required fields
+            const startBtn = document.getElementById('start-btn');
+            const hasFriend = document.getElementById('best-friend').value !== '';
+            const hasTheme = document.getElementById('theme').value !== '';
+            const hasScene = document.getElementById('scene').value !== '';
+
+            startBtn.disabled = !hasFriend || !hasTheme || !hasScene;
+        }
+
+        // Surprise Me button event listener
+        document.getElementById('surprise-me-btn').addEventListener('click', () => {
+            // Get all options from each dropdown (excluding the first empty option)
+            const themeSelect = document.getElementById('theme');
+            const sceneSelect = document.getElementById('scene');
+            const friendSelect = document.getElementById('best-friend');
+
+            const themeOptions = Array.from(themeSelect.options).slice(1); // Skip first empty option
+            const sceneOptions = Array.from(sceneSelect.options).slice(1); // Skip first empty option
+            const friendOptions = Array.from(friendSelect.options).slice(1); // Skip first empty option
+
+            // Randomly select one option from each dropdown
+            const randomTheme = themeOptions[Math.floor(Math.random() * themeOptions.length)];
+            const randomScene = sceneOptions[Math.floor(Math.random() * sceneOptions.length)];
+            const randomFriend = friendOptions[Math.floor(Math.random() * friendOptions.length)];
+
+            // Set the selected values
+            themeSelect.value = randomTheme.value;
+            sceneSelect.value = randomScene.value;
+            friendSelect.value = randomFriend.value;
+
+            // Update the preview
+            updatePreview();
+
+            // Add a fun animation effect
+            const surpriseBtn = document.getElementById('surprise-me-btn');
+            surpriseBtn.innerHTML = '🎉 Surprised! 🎉';
+            surpriseBtn.classList.add('animate-pulse');
+
+            // Reset button after animation
+            setTimeout(() => {
+                surpriseBtn.innerHTML = '🎲 Surprise Me!';
+                surpriseBtn.classList.remove('animate-pulse');
+            }, 2000);
+        });
+
+        // Start button event listener
+        document.getElementById('start-btn').addEventListener('click', async () => {
+            const friend = document.getElementById('best-friend').value;
+            const theme = document.getElementById('theme').value;
+            const scene = document.getElementById('scene').value;
+
+            if (!friend || !theme || !scene) {
+                alert('Please select all story options!');
+                return;
+            }
+
+            storyData.characterInfo = {
+                name: storyData.storyMode === 'tyson' ? 'Tyson' : 'Sophia',
+                bestFriend: friend,
+                theme: theme,
+                scene: scene,
+            };
+
+            setupScreen.classList.add('hidden');
+            storybookScreen.classList.remove('hidden');
+            showLoading('Creating your magical story...');
+
+            await generateStory();
+            hideLoading();
+        });
+
+        // --- Story Generation and API Calls ---
+
+        async function generateStory(userChoice = null) {
+            console.log('Starting generateStory with choice:', userChoice);
+            showLoading(userChoice ? 'Continuing your adventure...' : 'Creating your magical story...');
+
+            let prompt;
+            const currentPageCount = storyData.pages.length;
+            const choiceNumber = Math.floor(currentPageCount / 5) + 1; // Track which choice this is
+            console.log('Current page count:', currentPageCount, 'Choice number:', choiceNumber);
+
+            // Get character descriptions for consistent illustrations
+            const characterDescriptions = getCharacterDescriptions();
+
+            if (storyData.history.length === 0) {
+                console.log('Generating initial story');
+                // Initial prompt - first 5 pages
+                prompt = `Create a fun, illustrated children's story (exactly 25 pages total) for a 5-10 year old.
+                The main character is named ${storyData.characterInfo.name}. Their buddy is a ${storyData.characterInfo.bestFriend}.
+                The story is a ${storyData.characterInfo.theme} set in ${storyData.characterInfo.scene}.
+                
+                Character descriptions for consistent illustrations (use these ONLY in IMAGE_PROMPT, NOT in the story text):
+                - Main character (${storyData.characterInfo.name}): ${characterDescriptions.mainCharacter}
+                - Buddy: ${characterDescriptions.bestFriend}
+                
+                IMPORTANT: 
+                - Write natural, engaging story text that flows well and doesn't include character descriptions
+                - Keep the story text simple and child-friendly
+                - Use the character descriptions ONLY in the IMAGE_PROMPT section for consistent illustrations
+                - Do NOT include physical descriptions in the story text itself
+                
+                Generate EXACTLY 5 pages, no more, no less. Each page should have a short paragraph of text.
+                Most pages should have an illustration.
+                After these 5 pages, present the user with two clear choices for what happens next, formatted like this:
+                CHOICE_START
+                1. [First choice description]
+                2. [Second choice description]
+                CHOICE_END
+                
+                The output for each page must be in this exact format:
+                PAGE_START
+                TEXT: [Write engaging story text here. Do NOT include character descriptions.]
+                IMAGE_PROMPT: [A detailed prompt for an illustration for this page, describing the scene, characters, and actions. Include the specific character descriptions here for consistency.]
+                PAGE_END
+                
+                If a page should not have an illustration, use "IMAGE_PROMPT: NONE".
+                Remember: EXACTLY 5 pages, then choices.
+                `;
+            } else if (choiceNumber >= 4) {
+                console.log('Generating final section - 4th choice');
+                // Final section - 4th choice leads to final 5 pages (pages 21-25)
+                prompt = `Continue the story based on the user's choice: "${userChoice}".
+                Here is the story so far:
+                ${storyData.history.join('\n')}
+                
+                Character descriptions for consistent illustrations (use these ONLY in IMAGE_PROMPT, NOT in the story text):
+                - Main character (${storyData.characterInfo.name}): ${characterDescriptions.mainCharacter}
+                - Buddy: ${characterDescriptions.bestFriend}
+                
+                IMPORTANT: 
+                - Write natural, engaging story text that flows well and doesn't include character descriptions
+                - Keep the story text simple and child-friendly
+                - Use the character descriptions ONLY in the IMAGE_PROMPT section for consistent illustrations
+                - Do NOT include physical descriptions in the story text itself
+                
+                This is the final section of the story (4th choice). Generate exactly ${25 - currentPageCount} more pages to complete the story at exactly 25 pages total.
+                The final page should have a satisfying conclusion that wraps up the adventure.
+                Do NOT include any more choices - this is the end of the story.
+                Use the same format: PAGE_START, TEXT, IMAGE_PROMPT, PAGE_END.
+                Always include the specific character descriptions in image prompts for consistency.
+                `;
+            } else {
+                console.log('Generating follow-up section - choice', choiceNumber);
+                // Follow-up prompt with choices (choices 2 and 3)
+                prompt = `Continue the story based on the user's choice: "${userChoice}".
+                Here is the story so far:
+                ${storyData.history.join('\n')}
+                
+                Character descriptions for consistent illustrations (use these ONLY in IMAGE_PROMPT, NOT in the story text):
+                - Main character (${storyData.characterInfo.name}): ${characterDescriptions.mainCharacter}
+                - Buddy: ${characterDescriptions.bestFriend}
+                
+                IMPORTANT: 
+                - Write natural, engaging story text that flows well and doesn't include character descriptions
+                - Keep the story text simple and child-friendly
+                - Use the character descriptions ONLY in the IMAGE_PROMPT section for consistent illustrations
+                - Do NOT include physical descriptions in the story text itself
+                
+                Generate EXACTLY 5 more pages of the story, no more, no less.
+                After these 5 pages, present two new choices for the user.
+                Use the same format as before: PAGE_START, TEXT, IMAGE_PROMPT, PAGE_END and CHOICE_START, CHOICE_END.
+                Always include the specific character descriptions in image prompts for consistency.
+                Remember: EXACTLY 5 pages, then choices.
+                `;
+            }
+
+            try {
+                console.log('Calling Gemini API for text generation');
+                const textResponse = await callGeminiText(prompt);
+                console.log('Text response received, length:', textResponse.length);
+
+                storyData.history.push(prompt);
+                storyData.history.push(textResponse);
+
+                console.log('Starting to parse and display story');
+                await parseAndDisplayStory(textResponse);
+                console.log('Story parsing and display completed');
+
+            } catch (error) {
+                console.error("Error generating story:", error);
+                alert("Oops! Something went wrong while creating your story. Please try again.");
+            } finally {
+                console.log('Hiding loading screen');
+                hideLoading();
+            }
+        }
+
+        async function callGeminiText(prompt) {
+            if (MOCK_MODE) {
+                console.log('MOCK MODE: Generating mock story text');
+                await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
+                return generateMockStoryText();
+            }
+
+            const apiKey = window.API_CONFIG.GEMINI_API_KEY;
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{
+                    role: "user",
+                    parts: [
+                        { text: prompt }
+                    ]
+                }],
+                generationConfig: {
+                    temperature: 0.8,
+                    topP: 0.95,
+                }
+            };
+
+            const response = await fetchWithBackoff(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+            if (result.candidates && result.candidates.length > 0) {
+                return result.candidates[0].content.parts[0].text;
+            } else {
+                console.error("API Error Response:", result);
+                throw new Error("Failed to get a valid response from the text generation API.");
+            }
+        }
+
+        async function callImagen(prompt) {
+            if (MOCK_MODE) {
+                console.log('MOCK MODE: Generating mock image');
+                await new Promise(resolve => setTimeout(resolve, 800)); // Simulate API delay
+                return generateMockImage(prompt);
+            }
+
+            // Queue the image generation request
+            return requestQueue.add(async () => {
+                const apiKey = window.API_CONFIG.GEMINI_API_KEY;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+                const payload = {
+                    instances: [{ prompt: `${prompt}, children's storybook illustration style, vibrant colors, simple and friendly.` }],
+                    parameters: { "sampleCount": 1 }
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                if (result.predictions && result.predictions[0]?.bytesBase64Encoded) {
+                    return `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+                } else {
+                    console.error("API Error Response:", result);
+                    throw new Error("Failed to get a valid response from the image generation API.");
+                }
+            });
+        }
+
+        async function generateAudioForText(text) {
+            if (MOCK_MODE) {
+                // Mock audio generation - return a placeholder audio URL
+                console.log('MOCK MODE: Generating mock audio');
+                // Simulate API delay
+                await new Promise(resolve => setTimeout(resolve, 500));
+                // Return a mock audio URL (this won't actually play, but prevents errors)
+                return 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT';
+            }
+
+            // Queue the audio generation request
+            return requestQueue.add(async () => {
+                // OpenAI TTS generation
+                const apiKey = window.API_CONFIG.OPENAI_API_KEY;
+                const apiUrl = "https://api.openai.com/v1/audio/speech";
+                const payload = {
+                    model: "tts-1",
+                    input: text,
+                    voice: "alloy",
+                    response_format: "mp3",
+                    speed: 1.0
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const audioBlob = await response.blob();
+                const audioUrl = URL.createObjectURL(audioBlob);
+
+                // Preload the audio
+                const audio = new Audio(audioUrl);
+                audio.preload = 'auto';
+
+                return audioUrl;
+            });
+        }
+
+        async function callTTS(text) {
+            // This function now just plays the preloaded audio
+            const currentPage = storyData.pages[storyData.currentPage];
+            if (currentPage && currentPage.audioUrl) {
+                const audio = new Audio(currentPage.audioUrl);
+                await audio.play();
+            } else {
+                throw new Error("No preloaded audio available for this page.");
+            }
+        }
+
+        // --- Mock Functions for Testing ---
+
+        function generateMockStoryText() {
+            const currentPageCount = storyData.pages.length;
+            const choiceNumber = Math.floor(currentPageCount / 5) + 1;
+            const characterName = storyData.characterInfo?.name || (storyData.storyMode === 'tyson' ? 'Tyson' : 'Sophia');
+            const bestFriend = storyData.characterInfo?.bestFriend || 'Ice';
+            const theme = storyData.characterInfo?.theme || 'adventure';
+            const scene = storyData.characterInfo?.scene || 'a magical forest';
+
+            let mockStory = '';
+
+            if (currentPageCount === 0) {
+                // Initial story
+                mockStory = `PAGE_START
+TEXT:Once upon a time, there was a brave little child named ${characterName}. ${characterName} lived in a cozy house near ${scene} and had a wonderful buddy - ${bestFriend}! Every day, they would go on amazing ${theme} adventures together.
+IMAGE_PROMPT:A child named ${characterName} with their buddy ${bestFriend} in ${scene}, children's book illustration style
+PAGE_END
+
+PAGE_START
+TEXT:One sunny morning, ${characterName} woke up feeling extra excited. "Today is going to be the most magical day ever!" ${characterName} said to ${bestFriend}. The air was filled with sparkles and the trees seemed to whisper secrets.
+IMAGE_PROMPT:${characterName} waking up in a magical bedroom with sparkles floating around, ${bestFriend} nearby
+PAGE_END
+
+PAGE_START
+TEXT:${characterName} and ${bestFriend} decided to explore deeper into ${scene} than they had ever gone before. "What do you think we'll find?" ${characterName} wondered aloud. ${bestFriend} wagged their tail (or wings, or whatever they had) with excitement.
+IMAGE_PROMPT:${characterName} and ${bestFriend} walking into a mysterious part of ${scene}, looking excited and curious
+PAGE_END
+
+PAGE_START
+TEXT:As they walked deeper into ${scene}, they discovered a glowing path made of golden light. The path seemed to lead somewhere special. ${characterName} felt a warm feeling in their heart - this was definitely the start of an amazing ${theme}!
+IMAGE_PROMPT:A magical golden path in ${scene} leading into the distance, ${characterName} and ${bestFriend} standing at the beginning
+PAGE_END
+
+PAGE_START
+TEXT:At the end of the golden path, ${characterName} and ${bestFriend} found a mysterious door. The door was covered in colorful gems and had a sign that said "Choose Your Adventure!" ${characterName} knew this was where the real fun would begin.
+IMAGE_PROMPT:A magical door covered in colorful gems with a sign, ${characterName} and ${bestFriend} looking at it with wonder
+PAGE_END
+
+CHOICE_START
+1. Open the door and see what's inside
+2. Knock on the door first to be polite
+CHOICE_END`;
+            } else if (choiceNumber === 1) {
+                // After first choice
+                mockStory = `PAGE_START
+TEXT:${characterName} decided to ${storyData.history[0].toLowerCase()}. The door creaked open slowly, revealing a room filled with floating books and dancing shadows. ${bestFriend} looked around with wide eyes, clearly as amazed as ${characterName} was.
+IMAGE_PROMPT:${characterName} and ${bestFriend} entering a magical room with floating books and dancing shadows
+PAGE_END
+
+PAGE_START
+TEXT:In the center of the room stood a wise old wizard with a long beard made of starlight. "Welcome, young adventurer!" the wizard boomed. "I've been waiting for someone brave enough to enter my library of dreams."
+IMAGE_PROMPT:A wise old wizard with a starlight beard in a magical library, ${characterName} and ${bestFriend} looking up at him
+PAGE_END
+
+PAGE_START
+TEXT:The wizard waved his hand, and three magical books floated down from the ceiling. "Each book contains a different adventure," he explained. "But you can only choose one. Choose wisely, for your choice will shape your destiny!"
+IMAGE_PROMPT:Three floating magical books with different colored auras, the wizard pointing to them, ${characterName} and ${bestFriend} looking amazed
+PAGE_END
+
+PAGE_START
+TEXT:${characterName} looked at the three books carefully. One glowed with the colors of the ocean, another sparkled like a rainbow, and the third pulsed with golden light. ${bestFriend} nudged ${characterName} gently, as if to say "Trust your heart!"
+IMAGE_PROMPT:${characterName} examining three different magical books, ${bestFriend} nearby looking supportive
+PAGE_END
+
+PAGE_START
+TEXT:With a deep breath, ${characterName} reached out to choose one of the magical books. The moment ${characterName}'s hand touched the chosen book, the entire room began to spin with magical energy. The adventure was about to begin!
+IMAGE_PROMPT:${characterName} touching one of the magical books, the room spinning with magical energy, ${bestFriend} nearby
+PAGE_END
+
+CHOICE_START
+1. Choose the ocean book - dive into underwater adventures
+2. Choose the rainbow book - fly through colorful skies
+3. Choose the golden book - explore ancient treasure caves
+CHOICE_END`;
+            } else if (choiceNumber === 2) {
+                // After second choice
+                mockStory = `PAGE_START
+TEXT:The book ${characterName} chose began to glow brightly, and suddenly ${characterName} and ${bestFriend} were transported to a whole new world! Everything around them was ${storyData.history[1].includes('ocean') ? 'blue and watery' : storyData.history[1].includes('rainbow') ? 'colorful and floating' : 'golden and sparkly'}.
+IMAGE_PROMPT:${characterName} and ${bestFriend} in a new magical world, everything around them transformed
+PAGE_END
+
+PAGE_START
+TEXT:In this new world, ${characterName} discovered that ${characterName} could ${storyData.history[1].includes('ocean') ? 'breathe underwater and swim like a fish' : storyData.history[1].includes('rainbow') ? 'fly through the air like a bird' : 'dig through the earth like a mole'}. ${bestFriend} was amazed and excited to see ${characterName}'s new abilities!
+IMAGE_PROMPT:${characterName} using new magical abilities, ${bestFriend} watching with amazement
+PAGE_END
+
+PAGE_START
+TEXT:As they explored this magical place, they met friendly creatures who were just as excited to see them. The creatures told ${characterName} about a great challenge that awaited - something that would test ${characterName}'s courage and friendship.
+IMAGE_PROMPT:Friendly magical creatures talking to ${characterName} and ${bestFriend}, pointing toward a distant challenge
+PAGE_END
+
+PAGE_START
+TEXT:${characterName} felt a little nervous about the challenge, but ${bestFriend} gave ${characterName} a reassuring look. "We can do this together!" ${characterName} said, feeling brave with ${bestFriend} by their side.
+IMAGE_PROMPT:${characterName} looking determined with ${bestFriend} nearby, showing friendship and courage
+PAGE_END
+
+PAGE_START
+TEXT:The challenge was revealed - a magical maze that would test their teamwork and trust. "Only those with pure hearts and strong friendships can solve this maze," said the oldest creature. ${characterName} and ${bestFriend} looked at each other and nodded - they were ready!
+IMAGE_PROMPT:A magical maze entrance, ${characterName} and ${bestFriend} standing together ready to enter
+PAGE_END
+
+CHOICE_START
+1. Enter the maze together - teamwork makes the dream work
+2. Let ${bestFriend} lead the way - trust your friend's instincts
+3. Take turns leading - share the responsibility
+CHOICE_END`;
+            } else if (choiceNumber === 3) {
+                // After third choice
+                mockStory = `PAGE_START
+TEXT:${characterName} and ${bestFriend} entered the maze ${storyData.history[2].toLowerCase()}. The walls of the maze were made of living plants that seemed to whisper encouraging words as they passed by. Every turn brought new wonders and challenges.
+IMAGE_PROMPT:${characterName} and ${bestFriend} in a magical living maze with whispering plants
+PAGE_END
+
+PAGE_START
+TEXT:At the center of the maze, they found a magical fountain that sparkled with rainbow colors. The water in the fountain seemed to sing a beautiful melody. "This is the Heart of Friendship," said a voice from the fountain. "It grants one wish to those who reach it together."
+IMAGE_PROMPT:A magical rainbow fountain at the center of the maze, ${characterName} and ${bestFriend} looking at it with wonder
+PAGE_END
+
+PAGE_START
+TEXT:${characterName} thought carefully about what to wish for. There were so many possibilities! But then ${characterName} looked at ${bestFriend} and realized that the best wish would be something that would make their friendship even stronger and help others too.
+IMAGE_PROMPT:${characterName} thinking deeply while looking at ${bestFriend}, magical sparkles around them
+PAGE_END
+
+PAGE_START
+TEXT:"I wish," ${characterName} said to the fountain, "that everyone in the world could have a friend as wonderful as ${bestFriend}, and that all friendships could be as magical as ours!" The fountain glowed brighter than ever before.
+IMAGE_PROMPT:The fountain glowing brightly as ${characterName} makes the wish, ${bestFriend} nearby looking touched
+PAGE_END
+
+PAGE_START
+TEXT:The wish was granted! Suddenly, the entire maze began to transform. The walls became bridges connecting all the magical worlds, and ${characterName} could see that the wish had created new friendships everywhere. It was the most beautiful thing ${characterName} had ever seen.
+IMAGE_PROMPT:The maze transforming into connecting bridges, showing new friendships forming across magical worlds
+PAGE_END
+
+CHOICE_START
+1. Stay and help build more friendships - spread the magic
+2. Return home with new wisdom - share the lessons learned
+3. Continue exploring the new connections - discover more wonders
+CHOICE_END`;
+            } else {
+                // Final pages (choiceNumber >= 4)
+                mockStory = `PAGE_START
+TEXT:${characterName} decided to ${storyData.history[3].toLowerCase()}. As ${characterName} and ${bestFriend} made their way back through the magical worlds, they could see that their wish had truly changed everything for the better.
+IMAGE_PROMPT:${characterName} and ${bestFriend} walking through transformed magical worlds, seeing positive changes
+PAGE_END
+
+PAGE_START
+TEXT:When they finally returned to ${scene}, everything looked different - more magical and full of friendship. The trees seemed to smile, and the flowers sang sweet songs. ${characterName} realized that the adventure had made the whole world a better place.
+IMAGE_PROMPT:${scene} transformed with more magic and friendship, ${characterName} and ${bestFriend} looking around happily
+PAGE_END
+
+PAGE_START
+TEXT:That night, as ${characterName} lay in bed, ${bestFriend} curled up nearby. ${characterName} thought about all the amazing things they had experienced together - the magical worlds, the new friends, the challenges they had overcome as a team.
+IMAGE_PROMPT:${characterName} in bed thinking about the adventure, ${bestFriend} nearby, magical memories floating around
+PAGE_END
+
+PAGE_START
+TEXT:"${bestFriend}," ${characterName} whispered, "this was the best adventure ever. But you know what? I think the best part was that we did it together. You're the buddy anyone could ever have."
+IMAGE_PROMPT:${characterName} talking to ${bestFriend} in a cozy bedroom, showing deep friendship and love
+PAGE_END
+
+PAGE_START
+TEXT:And so, ${characterName} and ${bestFriend} fell asleep, dreaming of all the wonderful adventures they would have together in the future. For they knew that as long as they had each other, every day would be a magical adventure filled with friendship, courage, and love. The End.
+IMAGE_PROMPT:${characterName} and ${bestFriend} sleeping peacefully, magical dreams floating above them
+PAGE_END`;
+            }
+
+            return mockStory;
+        }
+
+        function generateMockImage(prompt) {
+            // Create a colorful placeholder image based on the prompt
+            const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            const encodedPrompt = encodeURIComponent(prompt.substring(0, 50));
+
+            return `https://placehold.co/600x400/${randomColor.replace('#', '')}/FFFFFF?text=Mock+Image%0A${encodedPrompt}`;
+        }
+
+        function generateMockAudio() {
+            // Create a mock audio URL that plays a simple beep sound
+            // This is a base64 encoded simple audio file
+            const mockAudioData = 'UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT';
+            const audioBlob = new Blob([Uint8Array.from(atob(mockAudioData), c => c.charCodeAt(0))], { type: 'audio/wav' });
+            const audioUrl = URL.createObjectURL(audioBlob);
+
+            // Preload the audio
+            const audio = new Audio(audioUrl);
+            audio.preload = 'auto';
+
+            return audioUrl;
+        }
+
+        // --- Audio Control Functions ---
+
+        async function togglePlayPause() {
+            const currentPage = storyData.pages[storyData.currentPage];
+            if (!currentPage || !currentPage.audioUrl) {
+                alert("No audio available for this page.");
+                return;
+            }
+
+            if (storyData.isPlaying) {
+                // Pause audio
+                if (storyData.currentAudio) {
+                    storyData.currentAudio.pause();
+                    storyData.isPlaying = false;
+                }
+                updatePlayPauseButton(false);
+            } else {
+                // Play audio
+                try {
+                    // Always create a new audio instance for the current page
+                    if (storyData.currentAudio) {
+                        storyData.currentAudio.pause();
+                    }
+                    storyData.currentAudio = new Audio(currentPage.audioUrl);
+                    storyData.currentAudio.addEventListener('ended', () => {
+                        storyData.isPlaying = false;
+                        updatePlayPauseButton(false);
+                        if (storyData.autoPlayMode) {
+                            autoAdvanceToNextPage();
+                        }
+                    });
+                    await storyData.currentAudio.play();
+                    storyData.isPlaying = true;
+                    updatePlayPauseButton(true);
+                } catch (err) {
+                    console.error("Audio playback failed", err);
+                    alert("Sorry, I couldn't play the audio.");
+                }
+            }
+        }
+
+        async function toggleAutoPlay() {
+            if (storyData.autoPlayMode) {
+                // Turn off auto-play
+                storyData.autoPlayMode = false;
+                updateAutoPlayButton(false);
+                if (storyData.currentAudio) {
+                    storyData.currentAudio.pause();
+                    storyData.isPlaying = false;
+                    updatePlayPauseButton(false);
+                }
+            } else {
+                // Turn on auto-play
+                storyData.autoPlayMode = true;
+                updateAutoPlayButton(true);
+                await togglePlayPause(); // Start playing current page
+            }
+        }
+
+        function updatePlayPauseButton(isPlaying) {
+            const playPauseBtn = document.querySelector('.play-pause-btn');
+            if (playPauseBtn) {
+                const playIcon = playPauseBtn.querySelector('.play-icon');
+                const pauseIcon = playPauseBtn.querySelector('.pause-icon');
+
+                if (isPlaying) {
+                    playIcon.classList.add('hidden');
+                    pauseIcon.classList.remove('hidden');
+                } else {
+                    playIcon.classList.remove('hidden');
+                    pauseIcon.classList.add('hidden');
+                }
+            }
+        }
+
+        function updateAutoPlayButton(isActive) {
+            const autoPlayBtn = document.querySelector('.auto-play-btn');
+            if (autoPlayBtn) {
+                if (isActive) {
+                    autoPlayBtn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+                    autoPlayBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+                } else {
+                    autoPlayBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
+                    autoPlayBtn.classList.add('bg-blue-500', 'hover:bg-blue-600');
+                }
+            }
+        }
+
+        function autoAdvanceToNextPage() {
+            const currentPageIndex = storyData.currentPage;
+            const totalPages = storyData.pages.length;
+
+            // Check if this is a choice page (pages 5, 10, 15, 20)
+            const isChoicePage = [5, 10, 15, 20].includes(currentPageIndex + 1);
+
+            if (isChoicePage) {
+                // Stop auto-play on choice pages
+                storyData.autoPlayMode = false;
+                updateAutoPlayButton(false);
+                console.log('Auto-play paused at choice page:', currentPageIndex + 1);
+                return;
+            }
+
+            // Check if we're at the end of the story
+            if (currentPageIndex >= totalPages - 1) {
+                storyData.autoPlayMode = false;
+                updateAutoPlayButton(false);
+                console.log('Auto-play ended - reached end of story');
+                return;
+            }
+
+            // Advance to next page
+            storyData.currentPage++;
+
+            // Reset audio state for new page
+            if (storyData.currentAudio) {
+                storyData.currentAudio.pause();
+                storyData.currentAudio = null;
+            }
+            storyData.isPlaying = false;
+
+            // Update all page-related displays
+            updatePageDisplay();
+
+            // Start playing the next page after a short delay
+            setTimeout(() => {
+                if (storyData.autoPlayMode) {
+                    togglePlayPause();
+                }
+            }, 1000);
+        }
+
+        async function fetchWithBackoff(url, options, retries = 3, delay = 1000) {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    if (response.status === 429 && retries > 0) { // Too Many Requests
+                        console.warn(`Rate limited. Retrying in ${delay / 1000}s...`);
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        return fetchWithBackoff(url, options, retries - 1, delay * 2);
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response;
+            } catch (error) {
+                if (retries > 0) {
+                    console.warn(`Request failed. Retrying in ${delay / 1000}s...`, error);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    return fetchWithBackoff(url, options, retries - 1, delay * 2);
+                }
+                throw error;
+            }
+        }
+
+
+        // --- Story Parsing and Display ---
+
+        async function parseAndDisplayStory(storyText) {
+            console.log('Starting to parse story:', storyText.substring(0, 200) + '...');
+
+            try {
+                const pagesRaw = storyText.split('PAGE_START').slice(1);
+                console.log('Found pages:', pagesRaw.length);
+
+                // Process pages and generate images and audio concurrently
+                const pagePromises = pagesRaw.map(async (pageRaw, index) => {
+                    console.log(`Processing page ${index + 1}:`, pageRaw.substring(0, 100) + '...');
+
+                    const textMatch = pageRaw.match(/TEXT:([\s\S]*?)IMAGE_PROMPT:/);
+                    const imagePromptMatch = pageRaw.match(/IMAGE_PROMPT:([\s\S]*?)PAGE_END/);
+
+                    if (textMatch && imagePromptMatch) {
+                        const text = textMatch[1].trim();
+                        const imagePrompt = imagePromptMatch[1].trim();
+                        let imageUrl = 'https://placehold.co/600x400/FFFFFF/CCCCCC?text=No+Illustration';
+                        let audioUrl = null;
+
+                        // Generate image and audio concurrently
+                        const [imageResult, audioResult] = await Promise.allSettled([
+                            imagePrompt.toUpperCase() !== 'NONE' && imagePrompt ? callImagen(imagePrompt) : Promise.resolve(imageUrl),
+                            generateAudioForText(text)
+                        ]);
+
+                        if (imageResult.status === 'fulfilled') {
+                            imageUrl = imageResult.value;
+                            console.log(`Image generated successfully for page ${index + 1}`);
+                        } else {
+                            console.error(`Failed to generate image for page ${index + 1}:`, imageResult.reason);
+                        }
+
+                        if (audioResult.status === 'fulfilled') {
+                            audioUrl = audioResult.value;
+                            console.log(`Audio generated successfully for page ${index + 1}`);
+                        } else {
+                            console.error(`Failed to generate audio for page ${index + 1}:`, audioResult.reason);
+                        }
+
+                        const page = { text, imageUrl, audioUrl };
+                        storyData.pages.push(page);
+                        console.log('Added page:', page.text.substring(0, 50) + '...');
+
+                        // For the first page, hide loading and show the storybook
+                        if (index === 0) {
+                            // If this is after a choice, show continue button instead of auto-advancing
+                            if (storyData.previousPageCount > 0) {
+                                hideLoading();
+                                storybookScreen.classList.remove('hidden');
+
+                                // Show continue adventure button
+                                const continueButton = document.createElement('div');
+                                continueButton.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                                continueButton.innerHTML = `
+                                    <div class="bg-white rounded-3xl p-8 md:p-12 text-center shadow-2xl max-w-md mx-4">
+                                        <p class="text-lg md:text-xl text-gray-700 mb-8">Your adventure is ready to continue!</p>
+                                        <button id="continue-adventure-btn" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-4 px-8 rounded-full text-xl md:text-2xl shadow-lg transform hover:scale-105 transition-all duration-300">
+                                            Let's Go! 🚀
+                                        </button>
+                                    </div>
+                                `;
+                                document.body.appendChild(continueButton);
+
+                                // Add event listener for continue button
+                                document.getElementById('continue-adventure-btn').addEventListener('click', () => {
+                                    // Remove the button
+                                    document.body.removeChild(continueButton);
+
+                                    // Advance to the first new page
+                                    storyData.currentPage = storyData.previousPageCount; // This is the correct index for the first new page
+                                    console.log('Advancing to first new page after continue button:', storyData.currentPage);
+
+                                    // Render the new page
+                                    renderStorybook();
+
+                                    // Start auto-play
+                                    setTimeout(() => {
+                                        storyData.autoPlayMode = true;
+                                        updateAutoPlayButton(true);
+                                        togglePlayPause();
+                                    }, 1000);
+                                });
+                            } else {
+                                // Initial story load - normal behavior
+                                hideLoading();
+                                storybookScreen.classList.remove('hidden');
+                                renderStorybook();
+
+                                // Start auto-play automatically after a short delay
+                                setTimeout(() => {
+                                    storyData.autoPlayMode = true;
+                                    updateAutoPlayButton(true);
+                                    togglePlayPause();
+                                }, 1000); // Wait 1 second for page to fully load
+                            }
+                        }
+
+                        return page;
+                    } else {
+                        console.warn(`Could not parse page ${index + 1}:`, pageRaw);
+                        return null;
+                    }
+                });
+
+                // Wait for all pages to complete processing
+                const resolvedPages = await Promise.all(pagePromises);
+                console.log('All pages processed:', resolvedPages.length);
+
+                // Pages are already added during incremental loading, so we don't need to add them again
+                // resolvedPages.forEach(page => {
+                //     if (page) {
+                //         storyData.pages.push(page);
+                //         console.log('Added page:', page.text.substring(0, 50) + '...');
+                //     }
+                // });
+
+                // Parse choices
+                const choiceMatch = storyText.match(/CHOICE_START([\s\S]*?)CHOICE_END/);
+                choiceButtonsContainer.innerHTML = ''; // Clear old choices
+
+                if (choiceMatch) {
+                    const choices = choiceMatch[1].trim().split('\n').map(c => c.replace(/^\d+\.\s*/, '').trim()).filter(c => c);
+                    console.log('Found choices:', choices);
+
+                    // Attach choices to the last page
+                    if (storyData.pages.length > 0) {
+                        storyData.pages[storyData.pages.length - 1].choices = choices;
+                        console.log('Attached choices to last page:', storyData.pages[storyData.pages.length - 1]);
+                    }
+
+                    displayChoices(choices);
+                } else {
+                    console.log('No choices found, checking if story is complete');
+                    // If no choices, it might be the end of the story
+                    if (storyData.pages.length >= 25 || storyText.toLowerCase().includes("the end")) {
+                        const endMessage = document.createElement('div');
+                        endMessage.className = 'text-center mt-6 p-6 bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl border-2 border-amber-200';
+                        endMessage.innerHTML = `
+                            <h2 class="text-3xl font-bold text-amber-700 mb-4">🎉 The End! 🎉</h2>
+                            <p class="text-xl text-gray-700 mb-4">Thanks for reading ${storyData.characterInfo.name}'s adventure!</p>
+                            <button onclick="location.reload()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-6 rounded-full transition-transform transform hover:scale-105">
+                                Create Another Story
+                            </button>
+                        `;
+                        choiceButtonsContainer.appendChild(endMessage);
+                    }
+                }
+
+                console.log('Rendering storybook with', storyData.pages.length, 'pages');
+
+                // Update the previous page count for next time
+                storyData.previousPageCount = storyData.pages.length;
+
+                // Only render if this is the initial story (not after a choice)
+                if (storyData.previousPageCount === storyData.pages.length) {
+                    renderStorybook();
+                }
+                console.log('Story parsing and display completed successfully');
+
+            } catch (error) {
+                console.error('Error in parseAndDisplayStory:', error);
+                alert('Sorry, there was an error processing your story. Please try again.');
+            }
+        }
+
+        function renderStorybook() {
+            console.log('Starting renderStorybook');
+
+            try {
+                // Update story title with a clever title based on the story content
+                const storyTitle = document.getElementById('story-title');
+                if (storyTitle) {
+                    const cleverTitle = generateCleverTitle();
+                    storyTitle.textContent = cleverTitle;
+                }
+
+                // Clear the storybook container
+                storybook.innerHTML = '';
+
+                // Create the current page element
+                const currentPage = storyData.pages[storyData.currentPage];
+                console.log('Current page:', storyData.currentPage, 'of', storyData.pages.length);
+
+                if (currentPage) {
+                    console.log('Rendering page with text:', currentPage.text.substring(0, 50) + '...');
+
+                    const pageElement = document.createElement('div');
+                    pageElement.className = 'w-full h-full bg-white p-6 md:p-8 flex flex-col items-center justify-center text-center';
+
+                    const hasImage = currentPage.imageUrl && !currentPage.imageUrl.includes('placehold.co');
+                    const textFontSize = hasImage ? 'text-sm md:text-base' : 'text-base md:text-lg';
+
+                    pageElement.innerHTML = `
+                        <div class="w-full h-full flex flex-col">
+                            <div class="text-center mb-4">
+                                <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2" style="font-family: 'KidsTouch', cursive;">${generateCleverTitle()}</h1>
+                            </div>
+                            ${hasImage ? `<img src="${currentPage.imageUrl}" alt="Story illustration" class="w-full h-2/3 object-contain rounded-lg mb-4 shadow-md">` : '<div class="flex-grow"></div>'}
+                            <div class="flex-grow flex items-center justify-center">
+                                <p class="${textFontSize} text-gray-800 leading-loose max-w-4xl">${currentPage.text}</p>
+                            </div>
+                            <button class="read-aloud-btn absolute bottom-4 right-4 bg-amber-500 text-white p-3 rounded-full shadow-md hover:bg-amber-600 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                            </button>
+                        </div>
+                    `;
+                    storybook.appendChild(pageElement);
+
+                    // Add audio functionality for current page
+                    const playPauseBtn = pageElement.querySelector('.play-pause-btn');
+                    const autoPlayBtn = pageElement.querySelector('.auto-play-btn');
+
+                    if (playPauseBtn) {
+                        playPauseBtn.addEventListener('click', async (e) => {
+                            e.stopPropagation();
+                            await togglePlayPause();
+                        });
+                    }
+
+                    if (autoPlayBtn) {
+                        autoPlayBtn.addEventListener('click', async (e) => {
+                            e.stopPropagation();
+                            await toggleAutoPlay();
+                        });
+                    }
+                } else {
+                    console.warn('No current page found');
+                }
+
+                console.log('Calling updatePageDisplay');
+                updatePageDisplay();
+                console.log('renderStorybook completed successfully');
+
+            } catch (error) {
+                console.error('Error in renderStorybook:', error);
+            }
+        }
+
+        function updateCurrentPageDisplay() {
+            console.log('Starting updateCurrentPageDisplay');
+
+            try {
+                // Get the current page
+                const currentPage = storyData.pages[storyData.currentPage];
+                console.log('Updating to page:', storyData.currentPage, 'of', storyData.pages.length);
+
+                if (currentPage) {
+                    console.log('Updating page with text:', currentPage.text.substring(0, 50) + '...');
+
+                    // Clear the storybook container
+                    storybook.innerHTML = '';
+
+                    const pageElement = document.createElement('div');
+                    pageElement.className = 'w-full h-full bg-white p-6 md:p-8 flex flex-col items-center justify-center text-center';
+
+                    const hasImage = currentPage.imageUrl && !currentPage.imageUrl.includes('placehold.co');
+                    const textFontSize = hasImage ? 'text-sm md:text-base' : 'text-base md:text-lg';
+
+                    pageElement.innerHTML = `
+                        <div class="w-full h-full flex flex-col">
+                            <div class="text-center mb-4">
+                                <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2" style="font-family: 'KidsTouch', cursive;">${generateCleverTitle()}</h1>
+                            </div>
+                            ${hasImage ? `<img src="${currentPage.imageUrl}" alt="Story illustration" class="w-full h-2/3 object-contain rounded-lg mb-4 shadow-md">` : '<div class="flex-grow"></div>'}
+                            <div class="flex-grow flex items-center justify-center">
+                                <p class="${textFontSize} text-gray-800 leading-loose max-w-4xl">${currentPage.text}</p>
+                            </div>
+                            <div class="absolute bottom-4 right-4 flex gap-2">
+                                <button class="play-pause-btn bg-amber-500 text-white p-3 rounded-full shadow-md hover:bg-amber-600 transition-colors">
+                                    <svg class="play-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                                    <svg class="pause-icon hidden" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                                </button>
+                                <button class="auto-play-btn bg-blue-500 text-white p-3 rounded-full shadow-md hover:bg-blue-600 transition-colors" title="Auto-play story">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    storybook.appendChild(pageElement);
+
+                    // Add audio functionality for current page
+                    const playPauseBtn = pageElement.querySelector('.play-pause-btn');
+                    const autoPlayBtn = pageElement.querySelector('.auto-play-btn');
+
+                    if (playPauseBtn) {
+                        playPauseBtn.addEventListener('click', async (e) => {
+                            e.stopPropagation();
+                            await togglePlayPause();
+                        });
+                    }
+
+                    if (autoPlayBtn) {
+                        autoPlayBtn.addEventListener('click', async (e) => {
+                            e.stopPropagation();
+                            await toggleAutoPlay();
+                        });
+                    }
+                } else {
+                    console.warn('No current page found for display update');
+                }
+
+                console.log('updateCurrentPageDisplay completed successfully');
+
+            } catch (error) {
+                console.error('Error in updateCurrentPageDisplay:', error);
+            }
+        }
+
+        function showChoiceModal() {
+            console.log('showChoiceModal called');
+            const choiceModal = document.getElementById('choice-modal');
+            const choiceModalButtons = document.getElementById('choice-modal-buttons');
+
+            // Get the current page to extract choices
+            const currentPage = storyData.pages[storyData.currentPage];
+            console.log('Current page:', currentPage);
+            console.log('Current page choices:', currentPage?.choices);
+
+            if (currentPage && currentPage.choices) {
+                console.log('Creating choice buttons for:', currentPage.choices);
+                // Clear previous choices
+                choiceModalButtons.innerHTML = '';
+
+                // Create choice buttons
+                currentPage.choices.forEach((choiceText, index) => {
+                    const button = document.createElement('button');
+                    button.textContent = choiceText;
+                    button.className = `block w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-4 px-8 rounded-2xl text-xl transition-all transform hover:scale-105 shadow-xl border-2 border-amber-300`;
+                    button.onclick = async () => {
+                        // Hide the modal
+                        choiceModal.classList.add('hidden');
+
+                        // Store auto-play state before generating new story
+                        const wasAutoPlaying = storyData.autoPlayMode;
+
+                        // Stop current audio and auto-play
+                        if (storyData.currentAudio) {
+                            storyData.currentAudio.pause();
+                            storyData.isPlaying = false;
+                        }
+                        storyData.autoPlayMode = false;
+
+                        // Generate new story content
+                        await generateStory(choiceText);
+
+                        // Restart auto-play if it was active before
+                        if (wasAutoPlaying) {
+                            console.log('Auto-play was active, will restart after delay');
+                            setTimeout(() => {
+                                console.log('Restarting auto-play on page:', storyData.currentPage, 'of', storyData.pages.length);
+                                storyData.autoPlayMode = true;
+                                updateAutoPlayButton(true);
+                                // Force a fresh audio instance for the current page
+                                if (storyData.currentAudio) {
+                                    storyData.currentAudio.pause();
+                                    storyData.currentAudio = null;
+                                }
+                                storyData.isPlaying = false;
+                                // Add a small additional delay to ensure audio is ready
+                                setTimeout(() => {
+                                    togglePlayPause();
+                                }, 500);
+                            }, 4000); // Increased delay to ensure all content is loaded
+                        } else {
+                            console.log('Auto-play was not active, not restarting');
+                        }
+                    };
+
+                    choiceModalButtons.appendChild(button);
+                });
+
+                // Show the modal
+                choiceModal.classList.remove('hidden');
+                console.log('Choice modal should now be visible');
+            } else {
+                console.log('No choices found on current page');
+            }
+        }
+
+        function displayChoices(choices) {
+            // This function is now handled by the modal
+            // Keep it for backward compatibility but it won't be used
+            console.log('Choices will be displayed in modal:', choices);
+        }
+
+        function getCharacterDescriptions() {
+            const bestFriend = storyData.characterInfo.bestFriend;
+
+            let bestFriendDesc = '';
+            if (bestFriend === 'Ice') {
+                bestFriendDesc = 'a friendly black and white Labrador Retriever dog named Ice with a white blaze running down the center of his face, large round amber eyes with white highlights, floppy black ears, and a gentle smile. Ice has a large white chest patch and smaller white markings on his shoulders. He has a curious, friendly expression and is medium-sized with a wagging tail.';
+            } else if (bestFriend === 'Rexy') {
+                bestFriendDesc = 'a cute baby Tyrannosaurus Rex named Rexy with bright green scaly skin, large round friendly eyes with black pupils and light green irises, a wide cheerful smile showing small white teeth, and small arms with tiny claws. Rexy has darker green spots on his back and tail, stands on thick muscular legs with three-toed feet, and has a plump rounded body. He has a gentle, curious expression despite being a T-Rex.';
+            } else if (bestFriend === 'Buccaneer Bob') {
+                bestFriendDesc = 'a friendly cartoon pirate named Buccaneer Bob with a black tricorn hat with gold trim, a bright red bandana tied around his head, large bright blue eyes with black pupils, a bushy dark brown mustache and beard, and a wide open smile. He wears a red long-sleeved shirt, a dark grey captain\'s coat with gold trim, black and grey striped pants, brown boots, and a golden hoop earring. He has a cheerful, welcoming expression and gives a thumbs-up gesture.';
+            } else if (bestFriend === 'Stardust') {
+                bestFriendDesc = 'a magical white unicorn named Stardust with a long flowing rainbow mane and tail that transitions from red through orange, yellow, green, light blue, and dark blue, a golden spiraled horn, large expressive blue eyes with long dark eyelashes, pink blush marks on her cheeks, and a wide happy smile. Stardust has light blue hooves outlined in black, a small pink heart on her left flank, and is in a dynamic trotting pose. She has a sweet, gentle, and joyful expression.';
+            } else if (bestFriend === 'Sparky') {
+                bestFriendDesc = 'a friendly electric robot named Sparky with a round metallic blue body, large glowing yellow eyes with black pupils that sparkle with electricity, and a wide cheerful smile made of white LED lights. Sparky has stubby arms and legs with silver joints, small antennae on top of his head that glow blue, and a lightning bolt symbol on his chest that pulses with energy. He has a friendly, curious expression and small electric sparks occasionally dance around his body.';
+            } else if (bestFriend === 'Bubbles') {
+                bestFriendDesc = 'a playful orange and white fish named Bubbles with large round friendly eyes, a wide happy smile, and a round plump body covered in bright orange scales with white belly. Bubbles has flowing orange fins that look like flowing hair, a small pink nose, and rosy cheeks. He has a cheerful, bubbly personality and is often surrounded by small air bubbles that float around him. His tail fin is large and fan-shaped, and he has a cute, friendly expression.';
+            } else if (bestFriend === 'Rocky') {
+                bestFriendDesc = 'a strong brown bear named Rocky with thick brown fur, large round friendly eyes with black pupils and brown irises, a wide gentle smile, and a big round nose. Rocky has muscular arms and legs, a large round belly, and stands on his hind legs. He wears a red bandana around his neck and has a friendly, protective expression. His fur is various shades of brown with lighter patches on his chest and face, and he has small rounded ears on top of his head.';
+            } else if (bestFriend === 'Twinkle') {
+                bestFriendDesc = 'a magical shooting star named Twinkle with a bright golden-yellow body that sparkles and glows, large twinkling blue eyes with white sparkles, and a wide happy smile. Twinkle has a long trailing tail made of sparkles and stardust that glows in rainbow colors, small golden wings on her sides, and a small golden star on her forehead. She has a cheerful, magical expression and leaves a trail of sparkles wherever she goes. Her body is shaped like a star with rounded edges and she has a warm, glowing aura.';
+            } else if (bestFriend === 'Giggles') {
+                bestFriendDesc = 'a jolly clown named Giggles with bright red curly hair, a round red nose, large bright blue eyes with white highlights, and a wide open-mouthed smile showing white teeth. Giggles wears a colorful polka-dot outfit with a bright yellow shirt, red and blue striped pants, oversized red shoes, and a green bow tie. He has rosy cheeks, bushy red eyebrows, and a friendly, silly expression. His face is round and cheerful, and he often has a small flower on his lapel that squirts water.';
+            } else if (bestFriend === 'Whiskers') {
+                bestFriendDesc = 'a curious orange tabby cat named Whiskers with bright green eyes with black pupils and white highlights, long white whiskers, and a small pink nose. Whiskers has soft orange fur with darker orange stripes, a white chest and paws, and a long striped tail that curves at the tip. She has a curious, alert expression with perked ears, and often tilts her head when listening. Her fur is fluffy and she has a small white spot on her forehead. She has a gentle, inquisitive personality.';
+            } else if (bestFriend === 'Zippy') {
+                bestFriendDesc = 'a fast white rabbit named Zippy with long pink ears, large round pink eyes with black pupils, a small pink nose, and a wide happy smile. Zippy has soft white fur, a small round body, and long powerful legs for running. He wears a small blue racing helmet and has a red bandana around his neck. He has an energetic, excited expression and is always ready to run and play. His ears are long and floppy, and he has a small cotton ball tail.';
+            } else if (bestFriend === 'Wise Owl') {
+                bestFriendDesc = 'a smart brown owl named Wise Owl with large round glasses perched on his beak, wise golden eyes with black pupils, and a gentle smile. Wise Owl has soft brown feathers with darker brown patterns, a round body, and small wings. He wears a small graduation cap and a red bow tie, and has a wise, kind expression. His feathers are various shades of brown with white patches on his chest, and he has small tufted ears on top of his head. He has a calm, intelligent personality.';
+            } else if (bestFriend === 'Rainbow') {
+                bestFriendDesc = 'a colorful bird named Rainbow with bright rainbow-colored feathers that transition from red through orange, yellow, green, blue, and purple, large bright eyes with black pupils, and a small curved beak. Rainbow has a round body, small wings, and a long colorful tail. She has a cheerful, friendly expression and often sings beautiful songs. Her feathers shimmer and sparkle in the light, and she has a small golden crown on her head. She has a sweet, musical personality.';
+            } else if (bestFriend === 'Captain Zoom') {
+                bestFriendDesc = 'a space explorer named Captain Zoom with a white space helmet with a clear visor, large bright blue eyes visible through the helmet, and a wide excited smile. Captain Zoom wears a bright orange space suit with white stripes, blue boots, and a red cape. He has a small antenna on his helmet and carries a silver space blaster. He has an adventurous, brave expression and is always ready for space adventures. His suit has various buttons and gadgets, and he has a friendly, heroic personality.';
+            } else if (bestFriend === 'Princess Luna') {
+                bestFriendDesc = 'a royal friend named Princess Luna with long flowing silver hair, large bright blue eyes with long dark eyelashes, and a gentle smile. Princess Luna wears a beautiful pink and purple dress with a silver crown, white gloves, and silver shoes. She has fair skin, rosy cheeks, and a graceful, elegant pose. She has a kind, gentle expression and often carries a small silver wand. Her dress sparkles with small gems, and she has a sweet, royal personality.';
+            } else if (bestFriend === 'Professor Bubbles') {
+                bestFriendDesc = 'a scientist named Professor Bubbles with wild white hair, large round glasses, bright blue eyes, and a wide excited smile. Professor Bubbles wears a white lab coat with colorful buttons, blue pants, and brown shoes. He has a small magnifying glass and often carries test tubes filled with colorful liquids. He has a curious, enthusiastic expression and is always excited about experiments. His hair sticks up in all directions, and he has a friendly, scientific personality.';
+            } else if (bestFriend === 'Dance Star') {
+                bestFriendDesc = 'a dancing star named Dance Star with a bright pink body that sparkles, large bright blue eyes with long eyelashes, and a wide happy smile. Dance Star wears a sparkly pink tutu, pink ballet shoes, and a small golden crown. She has long pink hair in pigtails, rosy cheeks, and is always in a dancing pose. She has a cheerful, energetic expression and loves to twirl and dance. Her body glows with a pink aura, and she has a sweet, artistic personality.';
+            } else if (bestFriend === 'Magic Mike') {
+                bestFriendDesc = 'a magician named Magic Mike with a tall black top hat, large bright green eyes with white highlights, and a wide mysterious smile. Magic Mike wears a black tuxedo with a red bow tie, white gloves, and black shoes. He has dark brown hair, a small mustache, and often carries a magic wand. He has a magical, mysterious expression and loves to perform tricks. His hat has a small golden star on it, and he has a friendly, enchanting personality.';
+            } else if (bestFriend === 'Princess Bella') {
+                bestFriendDesc = 'a royal princess named Princess Bella with long golden blonde hair, large bright green eyes with long eyelashes, and a sweet smile. Princess Bella wears a beautiful pink dress with a golden crown, white gloves, and pink shoes. She has fair skin, rosy cheeks, and a graceful, elegant pose. She has a kind, gentle expression and often carries a small golden wand. Her dress has sparkly gems and a flowing skirt, and she has a sweet, royal personality.';
+            } else if (bestFriend === 'Zoomer') {
+                bestFriendDesc = 'a talking red sports car named Zoomer with large bright blue headlights that look like eyes, a wide grille that forms a happy smile, and a sleek aerodynamic body. Zoomer has red paint with white racing stripes, chrome bumpers, and spinning silver wheels. He has a friendly, excited expression and loves to go fast. His headlights glow brightly, and he has a small antenna on his roof. He has an energetic, adventurous personality and makes car sounds when he talks.';
+            }
+
+            let mainCharacterDesc = '';
+            if (storyData.storyMode === 'tyson') {
+                mainCharacterDesc = 'a 5-year-old boy named Tyson with blonde hair, fair skin, and large expressive brown eyes. He wears a blue long-sleeved shirt, red shorts, and red and white sneakers. Tyson carries a bright yellow backpack adorned with white stars. He has a round friendly face with rosy cheeks, a small nose, and a wide open-mouthed smile. Tyson is in mid-stride with an energetic, adventurous pose.';
+            } else {
+                mainCharacterDesc = 'a 2-year-old girl named Sophia with blonde hair with soft waves and curls, fair skin, and large round bright blue eyes with dark pupils and white highlights. She has a very round full face with prominent rosy pink cheeks, a small upturned nose, and a gentle sweet smile. Sophia wears a plain short-sleeved pink onesie and has the typical proportions of a toddler with a large head and small body. She has an innocent and curious expression.';
+            }
+
+            return {
+                mainCharacter: mainCharacterDesc,
+                bestFriend: bestFriendDesc
+            };
+        }
+
+        function generateCleverTitle() {
+            if (storyData.pages.length === 0) {
+                return `${storyData.characterInfo.name}'s Adventure`;
+            }
+
+            // Get the first few pages to understand the story theme
+            const firstPageText = storyData.pages[0]?.text.toLowerCase() || '';
+            const characterName = storyData.characterInfo.name;
+            const theme = storyData.characterInfo.theme.toLowerCase();
+            const scene = storyData.characterInfo.scene.toLowerCase();
+            const bestFriend = storyData.characterInfo.bestFriend;
+
+            // Create clever titles based on story elements
+            const titles = [
+                `${characterName} & ${bestFriend}'s Adventure`,
+                `${characterName}'s ${theme} in ${scene}`,
+                `${characterName} & the ${scene.includes('forest') ? 'Enchanted Forest' : scene.includes('space') ? 'Space Station' : scene.includes('underwater') ? 'Underwater City' : scene.includes('candy') ? 'Candy Kingdom' : scene.includes('cloud') ? 'Cloud Castle' : 'Magical World'}`,
+                `${characterName}'s ${theme} Quest`,
+                `${characterName} & ${bestFriend}'s ${theme} Journey`,
+                `${characterName}'s ${scene.includes('forest') ? 'Forest' : scene.includes('space') ? 'Space' : scene.includes('underwater') ? 'Underwater' : scene.includes('candy') ? 'Candy' : scene.includes('cloud') ? 'Cloud' : 'Magical'} Adventure`
+            ];
+
+            // Choose a random title
+            return titles[Math.floor(Math.random() * titles.length)];
+        }
+
+
+        // --- Navigation ---
+        function updatePageDisplay() {
+            console.log('Starting updatePageDisplay');
+
+            try {
+                pageIndicator.textContent = `Page ${storyData.currentPage + 1} of ${storyData.pages.length}`;
+                prevPageBtn.disabled = storyData.currentPage === 0;
+
+                // Keep next button enabled on choice pages (last page) so users can click to see choices
+                const atLatestPage = storyData.currentPage >= storyData.pages.length - 1;
+                nextPageBtn.disabled = false; // Always enabled, even on choice pages
+
+                // Update button styles
+                prevPageBtn.classList.toggle('opacity-50', storyData.currentPage === 0);
+                nextPageBtn.classList.remove('opacity-50'); // Never dim the next button
+
+                // Hide the old choice container since we're using modal now
+                choiceButtonsContainer.style.display = 'none';
+
+                // Update the displayed page content without re-rendering everything
+                updateCurrentPageDisplay();
+
+                console.log('updatePageDisplay completed successfully');
+
+            } catch (error) {
+                console.error('Error in updatePageDisplay:', error);
+            }
+        }
+
+        nextPageBtn.addEventListener('click', () => {
+            console.log('Next button clicked');
+            console.log('Current page:', storyData.currentPage);
+            console.log('Total pages:', storyData.pages.length);
+
+            // Check if this is a choice page (last page)
+            const atLatestPage = storyData.currentPage >= storyData.pages.length - 1;
+            console.log('At latest page:', atLatestPage);
+
+            if (atLatestPage) {
+                console.log('Should show choice modal');
+                // Show choice modal instead of advancing
+                showChoiceModal();
+            } else {
+                console.log('Should advance to next page');
+                // Normal page advancement
+                storyData.currentPage++;
+                updatePageDisplay();
+            }
+        });
+
+        prevPageBtn.addEventListener('click', () => {
+            if (storyData.currentPage > 0) {
+                storyData.currentPage--;
+                updatePageDisplay();
+            }
+        });
+
+
+        // --- Utility Functions ---
+        function showLoading(message) {
+            loadingText.textContent = message;
+            loadingModal.classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            loadingModal.classList.add('hidden');
+        }
+
+        function base64ToArrayBuffer(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        function pcmToWav(pcmData, numChannels, sampleRate) {
+            const buffer = new ArrayBuffer(44 + pcmData.length * 2);
+            const view = new DataView(buffer);
+
+            // RIFF header
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + pcmData.length * 2, true);
+            writeString(view, 8, 'WAVE');
+            // fmt chunk
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true); // PCM
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * numChannels * 2, true);
+            view.setUint16(32, numChannels * 2, true);
+            view.setUint16(34, 16, true);
+            // data chunk
+            writeString(view, 36, 'data');
+            view.setUint32(40, pcmData.length * 2, true);
+
+            // Write PCM data
+            for (let i = 0; i < pcmData.length; i++) {
+                view.setInt16(44 + i * 2, pcmData[i], true);
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+
+        // Request queue for handling API rate limits
+        class RequestQueue {
+            constructor() {
+                this.queue = [];
+                this.processing = false;
+                this.delayBetweenRequests = 2000; // 2 seconds between requests
+                this.maxRetries = 3;
+                this.baseDelay = 5000; // 5 seconds base delay for rate limit retries
+            }
+
+            async add(request) {
+                return new Promise((resolve, reject) => {
+                    this.queue.push({
+                        request,
+                        resolve,
+                        reject,
+                        retries: 0
+                    });
+                    this.process();
+                });
+            }
+
+            async process() {
+                if (this.processing || this.queue.length === 0) {
+                    return;
+                }
+
+                this.processing = true;
+
+                while (this.queue.length > 0) {
+                    const { request, resolve, reject, retries } = this.queue.shift();
+
+                    try {
+                        console.log(`Processing request ${this.queue.length + 1} remaining in queue`);
+                        const result = await request();
+                        resolve(result);
+                    } catch (error) {
+                        console.error('Request failed:', error);
+
+                        // If it's a rate limit error and we haven't exceeded max retries, add it back to the queue with exponential backoff
+                        if (error.message.includes('429') && retries < this.maxRetries) {
+                            const backoffDelay = this.baseDelay * Math.pow(2, retries); // Exponential backoff: 30s, 60s, 120s, 240s, 480s
+                            console.log(`Rate limited, retrying request in ${backoffDelay / 1000}s (attempt ${retries + 1}/${this.maxRetries})`);
+
+                            // Add back to queue with delay
+                            setTimeout(() => {
+                                this.queue.push({
+                                    request,
+                                    resolve,
+                                    reject,
+                                    retries: retries + 1
+                                });
+                                this.process();
+                            }, backoffDelay);
+
+                            // Continue with next request after normal delay
+                            if (this.queue.length > 0) {
+                                console.log(`Waiting ${this.delayBetweenRequests}ms before next request`);
+                                await new Promise(resolve => setTimeout(resolve, this.delayBetweenRequests));
+                            }
+                            continue;
+                        } else {
+                            reject(error);
+                        }
+                    }
+
+                    // Wait before processing next request
+                    if (this.queue.length > 0) {
+                        console.log(`Waiting ${this.delayBetweenRequests}ms before next request`);
+                        await new Promise(resolve => setTimeout(resolve, this.delayBetweenRequests));
+                    }
+                }
+
+                this.processing = false;
+            }
+        }
+
+        const requestQueue = new RequestQueue();
+
+        function showLoading(message) {
+            loadingText.textContent = message;
+            loadingModal.classList.remove('hidden');
+        }
+
+        function updateLoadingProgress(currentPage, totalPages) {
+            if (loadingModal.classList.contains('hidden')) return;
+            loadingText.textContent = `Creating your magical story... Page ${currentPage} of ${totalPages} ready!`;
+        }
+
+        // Back button event listener
+        document.getElementById('back-btn').addEventListener('click', () => {
+            setupScreen.classList.add('hidden');
+            modeSelectionScreen.classList.remove('hidden');
+        });
+
+    </script>
+</body>
+
+</html>
